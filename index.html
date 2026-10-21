@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Water Level Monitoring System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="container">
+    <header>
+      <p class="eyebrow">IoT dashboard</p>
+      <h1>Water Level Monitoring System</h1>
+      <p>Live readings from an ESP32 and ThingSpeak.</p>
+    </header>
+
+    <section id="alert" class="alert" role="status" aria-live="polite">
+      <span id="alert-icon" aria-hidden="true">ℹ</span>
+      <span id="alert-text">Loading sensor data...</span>
+    </section>
+
+    <section class="toolbar" aria-label="Dashboard controls">
+      <label for="mode">Data mode</label>
+      <select id="mode">
+        <option value="demo">Demo: normal</option>
+        <option value="empty">Demo: empty</option>
+        <option value="full">Demo: overflow risk</option>
+        <option value="stale">Demo: stale data</option>
+        <option value="error">Demo: API error</option>
+        <option value="live">Live ThingSpeak</option>
+      </select>
+      <button id="refresh" type="button">Refresh</button>
+      <span id="connection" class="connection">Not connected</span>
+    </section>
+
+    <section class="dashboard-grid">
+      <article class="panel level-panel">
+        <h2>Current water level</h2>
+        <div class="level-value"><span id="level">--</span><small>%</small></div>
+        <div class="tank" aria-label="Vertical tank level illustration">
+          <div id="tank-fill" class="tank-fill"></div>
+          <span id="tank-label">No reading</span>
+        </div>
+        <p id="status" class="status">Status: DATA ERROR</p>
+      </article>
+
+      <article class="panel readings">
+        <h2>Sensor readings</h2>
+        <dl>
+          <div><dt>Water depth</dt><dd><span id="depth">--</span> cm</dd></div>
+          <div><dt>Sensor distance</dt><dd><span id="distance">--</span> cm</dd></div>
+          <div><dt>Last updated</dt><dd id="updated">--</dd></div>
+          <div><dt>Source status code</dt><dd id="source-status">--</dd></div>
+        </dl>
+      </article>
+    </section>
+
+    <section class="panel history">
+      <h2>Recent readings</h2>
+      <ul id="history-list"><li>No readings yet.</li></ul>
+    </section>
+
+    <footer>
+      <p>Alerts are shown while this dashboard is open. Closed pages need a separate notification service.</p>
+    </footer>
+  </main>
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
