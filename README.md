@@ -1,6 +1,6 @@
 # Water Level Monitoring Dashboard
 
-A simple static HTML, CSS, and vanilla JavaScript dashboard for ESP32 water-tank readings published to ThingSpeak.
+A simple static HTML, CSS, and vanilla JavaScript dashboard for ESP32 water-tank readings published to ThingSpeak. The project includes the dashboard, an ESP32 sensor sketch, and screenshots of the main states.
 
 ## Run locally
 
@@ -13,9 +13,37 @@ python -m http.server 8080
 
 Open <http://127.0.0.1:8080/>.
 
+## ESP32 setup
+
+The sketch in [esp_code.ino](esp_code.ino) reads an HC-SR04 ultrasonic sensor and uploads readings to ThingSpeak every 20 seconds.
+
+Connect the sensor as follows:
+
+| HC-SR04 pin | ESP32 pin |
+| --- | --- |
+| TRIG | GPIO 5 |
+| ECHO | GPIO 18 |
+| VCC | 5V |
+| GND | GND |
+
+Before uploading the sketch, set these values at the top of `esp_code.ino`:
+
+- `WIFI_SSID` and `WIFI_PASSWORD` for the Wi-Fi network
+- `THINGSPEAK_WRITE_API_KEY` for the ThingSpeak channel
+- Tank and sensor calibration constants, if required
+
+The ThingSpeak fields written by the sketch are:
+
+1. Sensor distance in centimetres
+2. Water level percentage
+3. Water depth in centimetres
+4. Numeric status (`0` empty, `1` normal, `2` full/overflow risk)
+
+Use a suitable voltage divider or level shifter for the HC-SR04 ECHO signal if required by your ESP32 board.
+
 ## Configure ThingSpeak live mode
 
-Edit [config.js](config.js):
+Edit [config.js](config.js) and set `demoMode` to `false`:
 
 ```js
 const DASHBOARD_CONFIG = {
@@ -26,11 +54,13 @@ const DASHBOARD_CONFIG = {
   emptyThresholdPercent: 15,
   overflowRiskThresholdPercent: 85,
   staleDataTimeoutMs: 120000,
-  demoMode: true
+  demoMode: false
 };
 ```
 
 Use a public channel to leave `readApiKey` empty, or put the channel's **Read API Key** there for a private channel. Never put the ThingSpeak **Write API Key** in this frontend. Any key embedded in JavaScript is visible to website visitors.
+
+For a real deployment, keep private credentials out of source control and use a local, ignored configuration file.
 
 The channel fields must be:
 
@@ -69,4 +99,13 @@ Scenarios can also be opened directly for testing: `?scenario=empty`, `?scenario
 - `style.css` - minimal responsive styling
 - `config.js` - local configuration placeholders
 - `app.js` - API fetching, validation, alert logic, and demo scenarios
-- `screenshots/` - captured demo-state screenshots
+- `esp_code.ino` - ESP32 ultrasonic sensor and ThingSpeak uploader
+- `screenshots/` - captured dashboard and simulation screenshots:
+  - [01-normal-water-level.png](screenshots/01-normal-water-level.png)
+  - [02-empty-tank-alert.png](screenshots/02-empty-tank-alert.png)
+  - [03-overflow-risk-warning.png](screenshots/03-overflow-risk-warning.png)
+  - [04-api-error.png](screenshots/04-api-error.png)
+  - [05-simulation-overflow-risk.png](screenshots/05-simulation-overflow-risk.png)
+  - [06-dashboard-full-overflow-risk.png](screenshots/06-dashboard-full-overflow-risk.png)
+  - [07-dashboard-normal-level.png](screenshots/07-dashboard-normal-level.png)
+  - [08-dashboard-empty-tank.png](screenshots/08-dashboard-empty-tank.png)
